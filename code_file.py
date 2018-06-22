@@ -33,21 +33,35 @@ import os
 
 def read_all_csv(datapath):
     csv_dict = {}
+
     for path, directories, files in os.walk(datapath):
         for file in files:
             if ".csv" in file:
-                print(file)
                 string_file = str(datapath+'/'+file)
-                print(string_file)
                 df = pd.read_csv(string_file)
+                print(list(df.columns.values))
                 csv_dict[file] = df
+    return csv_dict
 
-                print(df.head())
+def merge_dataframe_list(df_dict):
+    merged_df = None
+    for df in df_dict.values():
+        if merged_df is None:
+            merged_df = df
+        else:
+            merged_df = pd.merge(merged_df, df, on='Accident_Index', how='outer')
+    return merged_df
+
+
+
+
 
 
 if __name__ == '__main__':
     data_path = os.getcwd() + '/data'
-    read_all_csv(data_path)
+    dataframe_dict = read_all_csv(data_path)
+    csv_merged = merge_dataframe_list(dataframe_dict)
+    print(csv_merged.count())
 
 
 

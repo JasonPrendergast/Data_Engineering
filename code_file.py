@@ -27,14 +27,12 @@
 import sqlite3
 import mml
 import pandas as pd
-import sklearn
 import os
 import argparse
 from sklearn.model_selection import train_test_split
 
 
 class HandleInputs:
-
     def read_all_csv(self,
                      datapath,
                      inc_db,
@@ -49,8 +47,6 @@ class HandleInputs:
                 if ".csv" in file:
                     # file the dataframe with the content of the csv
                     df = pd.read_csv(datapath+'/'+file)
-                    if df.empty:
-                        print(file)
                     # add the csv to the dictionary
                     csv_dict[file] = df
                 # check if the db is required
@@ -70,7 +66,6 @@ class HandleInputs:
                                                            cnx)
 
         return csv_dict
-
 
     def merge_dataframe_list(self,
                              df_dict):
@@ -105,7 +100,6 @@ class HandleInputDb:
         # change the pk to column name to Accident_Index
         return df
 
-
     def find_all_table_names(self,
                              c):
         # get all tables in the database
@@ -118,6 +112,7 @@ class HandleInputDb:
                           file,
                           csv_dict,
                           cnx):
+        # loop the tables
         for table in table_names:
             # turn the tuple to a string
             table = str(table)
@@ -150,6 +145,7 @@ class HandleOutputs:
     def data_frame_to_db(self,
                          name,
                          data):
+        # create new database connection
         conn = sqlite3.connect(os.getcwd()+'/data/'+'traintest.db')
         data.to_sql(name, con=conn, if_exists='replace')
 
@@ -175,14 +171,14 @@ if __name__ == '__main__':
     data_frame_dict = HandleInputs.read_all_csv(data_path, inc_db, inc_response)
     # Run merge all the dataframes in dict to a single dataframe
     csv_merged = HandleInputs.merge_dataframe_list(data_frame_dict)
-
+    # use sklearn's built in train test split
     train, test = train_test_split(csv_merged, test_size=0.2)
-
+    # convert the numpy arrays back to pandas dataframes
     train = pd.DataFrame(train)
     test = pd.DataFrame(test)
-
+    # create handle output object
     HandleOutputs = HandleOutputs()
-
+    # insert the train test dataframes in to a new database
     HandleOutputs.data_frame_to_db('train', train)
     HandleOutputs.data_frame_to_db('test', test)
 

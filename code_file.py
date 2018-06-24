@@ -35,7 +35,10 @@ from sklearn.model_selection import train_test_split
 
 class HandleInputs:
 
-    def read_all_csv(self, datapath, inc_db, inc_response):
+    def read_all_csv(self,
+                     datapath,
+                     inc_db,
+                     inc_response):
         # create empty dictionary
         csv_dict = {}
         # walk through the data file
@@ -61,34 +64,16 @@ class HandleInputs:
                         HandleInputDbobj = HandleInputDb()
                         table_names = HandleInputDbobj.find_all_table_names(c)
                         # loop the tables
-                        for table in table_names:
-                            # turn the tuple to a string
-                            table = str(table)
-                            #clean the table name string
-                            for ch in [',', '-', ')', '(', '/', '\\', '[', ']', '{', '}', '&', '#', '\'', '"', ':', '', ')',
-                                       '(', '*', '&',
-                                       '^', '%', '$', '£', '@', '"', '!', '?', '.', '=', '+', '_', '']:
-                                if ch in table:
-                                    table = table.replace(ch, "")
-                            # check if the table name is response
-                            if table != 'response':
-                                # create the dict key from the table name and file name
-                                db_table = str(table) + '_' + file
-                                # get the contents of the table and insert it into the dict with the key
-                                csv_dict[db_table] = HandleInputDbobj.database_to_df(cnx, table)
-                            # check if the table is response
-                            elif table == 'response' and inc_response != '0':
-                                # create the dict key from the table name and file name
-                                db_table = str(table) + '_' + file
-                                # get the contents of the table and insert it into the dict with the key
-                                csv_dict[db_table] = HandleInputDbobj.database_to_df(cnx, table)
-                            else:
-                                # simple handle when response is bring skipped
-                                print('no output')
+                        HandleInputDbobj.handle_all_tables(table_names,
+                                                           file,
+                                                           csv_dict,
+                                                           cnx)
+
         return csv_dict
 
 
-    def merge_dataframe_list(self, df_dict):
+    def merge_dataframe_list(self,
+                             df_dict):
         # create a placeholder
         merged_df = None
         # loop the dictionary
@@ -104,7 +89,9 @@ class HandleInputs:
 
 
 class HandleInputDb:
-    def database_to_df(self, cnx, table):
+    def database_to_df(self,
+                       cnx,
+                       table):
 
         # get all the data from the table
         df = pd.read_sql_query("SELECT * FROM " + table, cnx)
@@ -119,17 +106,50 @@ class HandleInputDb:
         return df
 
 
-    def find_all_table_names(self, c):
+    def find_all_table_names(self,
+                             c):
         # get all tables in the database
         c.execute("SELECT name FROM sqlite_master WHERE type='table';")
         table_names = c.fetchall()
         return table_names
 
+    def handle_all_tables(self,
+                          table_names,
+                          file,
+                          csv_dict,
+                          cnx):
+        for table in table_names:
+            # turn the tuple to a string
+            table = str(table)
+            # clean the table name string
+            for ch in [',', '-', ')', '(', '/', '\\', '[', ']', '{', '}', '&', '#', '\'', '"', ':', '', ')',
+                       '(', '*', '&',
+                       '^', '%', '$', '£', '@', '"', '!', '?', '.', '=', '+', '_', '']:
+                if ch in table:
+                    table = table.replace(ch, "")
+            # check if the table name is response
+            if table != 'response':
+                # create the dict key from the table name and file name
+                db_table = str(table) + '_' + file
+                # get the contents of the table and insert it into the dict with the key
+                csv_dict[db_table] = self.database_to_df(cnx, table)
+            # check if the table is response
+            elif table == 'response' and inc_response != '0':
+                # create the dict key from the table name and file name
+                db_table = str(table) + '_' + file
+                # get the contents of the table and insert it into the dict with the key
+                csv_dict[db_table] = self.database_to_df(cnx, table)
+            else:
+                # simple handle when response is bring skipped
+                break
+
 class HandleOutputs:
     def create_csv(self):
         pass
 
-    def data_frame_to_db(self, name, data):
+    def data_frame_to_db(self,
+                         name,
+                         data):
         conn = sqlite3.connect(os.getcwd()+'/data/'+'traintest.db')
         data.to_sql(name, con=conn, if_exists='replace')
 

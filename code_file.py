@@ -33,10 +33,7 @@ from sklearn.model_selection import train_test_split
 
 
 class HandleInputs:
-    def read_all_csv(self,
-                     datapath,
-                     inc_db,
-                     inc_response):
+    def read_all_files(self, datapath, inc_db, inc_response):
         # create empty dictionary
         csv_dict = {}
         # walk through the data file
@@ -67,8 +64,7 @@ class HandleInputs:
 
         return csv_dict
 
-    def merge_dataframe_list(self,
-                             df_dict):
+    def merge_dataframe_list(self, df_dict):
         # create a placeholder
         merged_df = None
         # loop the dictionary
@@ -84,9 +80,7 @@ class HandleInputs:
 
 
 class HandleInputDb:
-    def database_to_df(self,
-                       cnx,
-                       table):
+    def database_to_df(self, cnx, table):
 
         # get all the data from the table
         df = pd.read_sql_query("SELECT * FROM " + table, cnx)
@@ -100,18 +94,13 @@ class HandleInputDb:
         # change the pk to column name to Accident_Index
         return df
 
-    def find_all_table_names(self,
-                             c):
+    def find_all_table_names(self, c):
         # get all tables in the database
         c.execute("SELECT name FROM sqlite_master WHERE type='table';")
         table_names = c.fetchall()
         return table_names
 
-    def handle_all_tables(self,
-                          table_names,
-                          file,
-                          csv_dict,
-                          cnx):
+    def handle_all_tables(self, table_names, file, csv_dict, cnx):
         # loop the tables
         for table in table_names:
             # turn the tuple to a string
@@ -139,14 +128,13 @@ class HandleInputDb:
                 break
 
 class HandleOutputs:
-    def create_csv(self):
+    def create_csv(self, name, data):
         pass
 
-    def data_frame_to_db(self,
-                         name,
-                         data):
+    def data_frame_to_db(self, name, data):
         # create new database connection
         conn = sqlite3.connect(os.getcwd()+'/data/'+'traintest.db')
+        # create a table and from the dataframe and insert the values
         data.to_sql(name, con=conn, if_exists='replace')
 
 
@@ -168,7 +156,7 @@ if __name__ == '__main__':
     # Create the handle inputs object
     HandleInputs = HandleInputs()
     # Run the handle inputs method read all
-    data_frame_dict = HandleInputs.read_all_csv(data_path, inc_db, inc_response)
+    data_frame_dict = HandleInputs.read_all_files(data_path, inc_db, inc_response)
     # Run merge all the dataframes in dict to a single dataframe
     csv_merged = HandleInputs.merge_dataframe_list(data_frame_dict)
     # use sklearn's built in train test split

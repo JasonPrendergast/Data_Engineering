@@ -29,7 +29,9 @@ class HandleInputs:
                         # Get the table names from the database
                         table_names = dbobj.find_all_table_names(c)
                         # loop the tables
-                        dbobj.handle_all_tables(table_names, file, csv_dict, cnx, inc_response)
+                        csv_dict = dbobj.handle_all_tables(table_names, file, csv_dict, cnx, inc_response)
+                        c.close()
+                        cnx.close()
 
         return csv_dict
 

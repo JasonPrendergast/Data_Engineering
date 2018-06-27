@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # use args parse to turn off and on db tables
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--include_db', type=str, default='0',
+    parser.add_argument('--include_db', type=str, default='1',
                         help='Would you like to include db files set to 0 for no ')
     parser.add_argument('--include_response_table',
                         help="Would you like to include this erroneous table? set to 0 for no",

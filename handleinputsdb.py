@@ -15,19 +15,25 @@ class HandleInputDb:
             if table == 'police':
                 print('in this')
                 df = df.rename(columns={'police_force': 'police_force_db'})
-                df = df.rename(columns={'did_police_officer_attend_scene_of_accident': 'did_police_officer_attend_scene_of_accident_db'})
+                df = df.rename(columns={'did_police_officer_attend_scene_of_accident':
+                                            'did_police_officer_attend_scene_of_accident_db'})
             # change the pk to column name to Accident_Index
         except Exception as ex:
             pass
         if df is None:
+            # this will cause an error later if it is triggered although it should never happen
+            # because this is from a list of tables taken from the database
             pass
         else:
             return df
 
     def find_all_table_names(self, c):
-        # get all tables in the database
-        c.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        table_names = c.fetchall()
+        try:
+            # get all tables in the database
+            c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            table_names = c.fetchall()
+        except Exception as ex:
+            pass
         return table_names
 
     def handle_all_tables(self, table_names, file, csv_dict, cnx, inc_response):
@@ -38,7 +44,7 @@ class HandleInputDb:
             # clean the table name string
             for ch in [',', '-', ')', '(', '/', '\\', '[', ']', '{', '}', '&', '#', '\'', '"', ':', '', ')',
                        '(', '*', '&',
-                       '^', '%', '$', '£', '@', '"', '!', '?', '.', '=', '+', '_', '']:
+                       '^', '%', '$', '£', '@', '"', '!', '?', '.', '=', '+', '']:
                 if ch in table:
                     table = table.replace(ch, "")
 

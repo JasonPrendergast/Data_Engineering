@@ -12,7 +12,7 @@ class HandleInputs:
         for path, directories, files in os.walk(datapath):
             # Grab all the files
             for file in files:
-                print(file)
+
                 # check the file extension for csv
                 if ".csv" in file:
                     # file the dataframe with the content of the csv

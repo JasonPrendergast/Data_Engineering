@@ -52,10 +52,12 @@ class HandleInputDb:
             db_table = str(table) + '_' + file
             # check if the table name is response
             if table != 'response':
+                print('table != response')
                 # get the contents of the table and insert it into the dict with the key
                 csv_dict[db_table] = self.database_to_df(cnx, table)
             # check if the table is response
             elif table == 'response' and inc_response != '0':
+                print('table == response and inc_response != 0')
                 # get the contents of the table and insert it into the dict with the key
                 csv_dict[db_table] = self.database_to_df(cnx, table)
             else:

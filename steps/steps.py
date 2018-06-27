@@ -10,10 +10,7 @@ import pandas as pd
 
 @given('I create new HandleinputDB_database_to_df context variables')
 def i_create_new_HandleinputDB_database_to_df_context_variables(context):
-    context.data_path = os.path.dirname(os.getcwd()) + '/inputs' #os.getcwd() + '/inputs'
-
-    print('------------------------')
-    print(context.data_path)
+    context.data_path = os.path.dirname(os.getcwd()) + '/inputs'
     context.cnx = sqlite3.connect(context.data_path + '/' + 'de.db')
 
 
@@ -46,7 +43,6 @@ def i_should_see_database_to_df_result(context, equals):
 @given('I create new HandleinputDB_find_all_tables_names context variables')
 def i_create_new_HandleinputDB_find_all_tables_names_context_variables(context):
     context.data_path = os.path.dirname(os.getcwd()) + '/inputs' #os.getcwd() + '/inputs'
-    print(context.data_path)
     context.cnx = sqlite3.connect(context.data_path + '/' + 'de.db')
     context.c = context.cnx.cursor()
 
@@ -73,7 +69,6 @@ def i_should_see_find_all_tables_names_result(context, equals):
 @given('I create new HandleinputDB_handle_all_tables context variables')
 def i_create_new_HandleinputDB_handle_all_tables_context_variables(context):
     context.data_path = os.path.dirname(os.getcwd()) + '/inputs' #os.path.dirname(os.getcwd()) + '/inputs'
-    print(context.data_path)
     context.cnx = sqlite3.connect(context.data_path + '/' + 'de.db')
     context.csv_dict = {}
 
@@ -84,12 +79,12 @@ def i_have_table(context, table_name1, table_name2):
 
 
 @given('I have file name {file}')
-def i_have_table(context, file):
+def i_have_file_name(context, file):
     context.filename = file
 
 
 @given('I have response {inc_response}')
-def i_have_table(context, inc_response):
+def i_have_response(context, inc_response):
     context.inc_response = inc_response
 
 
@@ -112,6 +107,44 @@ def i_should_see_handle_all_tables_result(context, equals):
             answer = True
         else:
             answer = False
+    else:
+        answer = False
+    assert equals == str(answer)
+
+# ----------------------------------------------------------------------------------------------------------------
+
+
+@given('I create new Handleinput_read_all_files context variables')
+def i_create_new_HandleinputDB_handle_all_tables_context_variables(context):
+    context.HandleInputDbobj = handleinputsdb.HandleInputDb()
+    context.data_path = os.path.dirname(os.getcwd()) + '/inputs'
+
+
+@given('I have inc_db {inc_db}')
+def i_have_inc_db(context, inc_db):
+    context.inc_db = inc_db
+
+
+@when('I call read_all_files')
+def i_call_read_all_files(context):
+    # Create the handle inputs object
+    HandleInputs = handleinputs.HandleInputs()
+    # Run the handle inputs method read all
+    context.data_frame_dict = HandleInputs.read_all_files(context.data_path,
+                                                          context.inc_db,
+                                                          context.inc_response,
+                                                          context.HandleInputDbobj)
+
+
+@given('I have length {length}')
+def i_have_length(context, length):
+    context.length = int(length)
+
+
+@then('I should see read_all_files {equals}')
+def i_should_see_read_all_files_result(context, equals):
+    if len(context.data_frame_dict) == context.length:
+        answer = True
     else:
         answer = False
     assert equals == str(answer)

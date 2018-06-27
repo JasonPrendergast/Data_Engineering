@@ -149,3 +149,44 @@ def i_should_see_read_all_files_result(context, equals):
         answer = False
     assert equals == str(answer)
 
+# ----------------------------------------------------------------------
+
+
+@given('I create new Handleinput_merge_dataframe_list context variables')
+def i_create_new_HandleinputDB_merge_dataframe_list_context_variables(context):
+    context.df_dict = {}
+
+# When I call merge_dataframe_list
+#     Then I should see merge_dataframe_list <equals>
+
+# I have columns <Columnname1> <Columnname2> <Columnname3> <Columnname4>
+# <Columnvalue1> <Columnvalue2> <Columnvalue3> <Columnvalue4>
+# <Columnkey1> <Columnkey2> <Columnkey3> <Columnvkey4>
+
+@given('I have columns {Columnname1} {Columnname2} {Columnname3} {Columnname4} {Columnvalue1} {Columnvalue2} {Columnvalue3} {Columnvalue4} {Columnvalue5} {Columnvalue6} {Columnkey1} {Columnkey2} {Columnkey3} {Columnvkey4}')
+def i_have_columns(context, Columnname1, Columnname2, Columnname3, Columnname4,
+                  Columnvalue1, Columnvalue2, Columnvalue3, Columnvalue4, Columnvalue5, Columnvalue6,
+                  Columnkey1, Columnkey2, Columnkey3, Columnvkey4):
+    data1 = [[Columnkey1, Columnvalue1], [Columnkey2, Columnvalue2], [Columnkey3, Columnvalue3]]
+    df1 = pd.DataFrame(data1, columns=[Columnname1, Columnname2])
+    data2 = [[Columnkey1, Columnvalue4], [Columnkey2, Columnvalue5], [Columnkey3, Columnvalue6]]
+    df2 = pd.DataFrame(data2, columns=[Columnname3, Columnname4])
+    dataname1 = 'dataname1'
+    dataname2 = 'dataname2'
+    context.df_dict = {dataname1: df1, dataname2: df2}
+
+@when('I call merge_dataframe_list')
+def i_call_merge_dataframe_list(context):
+    # Create the handle inputs object
+    HandleInputs = handleinputs.HandleInputs()
+    # Run merge all the dataframes in dict to a single dataframe
+    context.csv_merged = HandleInputs.merge_dataframe_list(context.df_dict)
+
+@then('I should see merge_dataframe_list {equals}')
+def i_should_see_merge_dataframe_list_result(context, equals):
+    len(list(context.csv_merged.columns.values))
+    if len(list(context.csv_merged.columns.values)) == 3:
+        answer = True
+    else:
+        answer = False
+    assert equals == str(answer)

@@ -36,15 +36,22 @@ class HandleInputs:
         return csv_dict
 
     def merge_dataframe_list(self, df_dict):
-        # create a placeholder
-        merged_df = None
-        # loop the dictionary
-        for key, df in df_dict.items():
-            # check if the placeholder is none aka this is the first iteration
-            if merged_df is None:
-                # since it is the first iteration make the placeholder contain the first dataframe
-                merged_df = df
-            # if it is not the first loop
-            else:
-                merged_df = pd.merge(merged_df, df, on='Accident_Index', how='outer', suffixes=('', '_'+key))
+        try:
+            # create a placeholder
+            merged_df = None
+            # loop the dictionary
+            for key, df in df_dict.items():
+                # check if the placeholder is none aka this is the first iteration
+                if merged_df is None:
+                    # since it is the first iteration make the placeholder contain the first dataframe
+                    merged_df = df
+                # if it is not the first loop
+                else:
+                    try:
+                        merged_df = pd.merge(merged_df, df, on='Accident_Index', how='outer', suffixes=('', '_'+key))
+                    except Exception as ex:
+                        pass
+        except Exception as ex:
+            pass
+
         return merged_df

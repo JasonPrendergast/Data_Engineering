@@ -15,4 +15,3 @@ Feature: test cases HandleOutputs_data_frames_to_db
    | Columnname1    | Columnname2 | Columnname3    |Columnname4|Columnvalue1|Columnvalue2|Columnvalue3|Columnvalue4|Columnvalue5|Columnvalue6|Columnkey1|Columnkey2|Columnkey3|Columnkey4| equals |
    | Accident_Index | age         | blah           | height    |  10        | 11         | 12         | 110        |120         |100         | 2100     |2111      |2333      |2450      | False  |
    | Accident_Index | age         | Accident_Index | height    |  10        | 11         | 12         | 110        |120         |100         | 2100     |2111      |2333      |2450      | True   |
-  

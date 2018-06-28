@@ -6,32 +6,35 @@ import sqlite3
 
 class HandleInputs:
     def read_all_files(self, datapath, inc_db, inc_response, dbobj):
-        # create empty dictionary
-        csv_dict = {}
-        # walk through the data file
-        for path, directories, files in os.walk(datapath):
-            # Grab all the files
-            for file in files:
+        try:
+            # create empty dictionary
+            csv_dict = {}
+            # walk through the data file
+            for path, directories, files in os.walk(datapath):
+                # Grab all the files
+                for file in files:
 
-                # check the file extension for csv
-                if ".csv" in file:
-                    # file the dataframe with the content of the csv
-                    df = pd.read_csv(datapath+'/'+file)
-                    # add the csv to the dictionary
-                    csv_dict[file] = df
-                # check if the db is required
-                if inc_db != '0':
-                    # check the file extension for db
-                    if '.db' in file:
-                        # Create database connection
-                        cnx = sqlite3.connect(datapath+'/'+file)
-                        c = cnx.cursor()
-                        # Get the table names from the database
-                        table_names = dbobj.find_all_table_names(c)
-                        # loop the tables
-                        csv_dict = dbobj.handle_all_tables(table_names, file, csv_dict, cnx, inc_response)
-                        c.close()
-                        cnx.close()
+                    # check the file extension for csv
+                    if ".csv" in file:
+                        # file the dataframe with the content of the csv
+                        df = pd.read_csv(datapath+'/'+file)
+                        # add the csv to the dictionary
+                        csv_dict[file] = df
+                    # check if the db is required
+                    if inc_db != '0':
+                        # check the file extension for db
+                        if '.db' in file:
+                            # Create database connection
+                            cnx = sqlite3.connect(datapath+'/'+file)
+                            c = cnx.cursor()
+                            # Get the table names from the database
+                            table_names = dbobj.find_all_table_names(c)
+                            # loop the tables
+                            csv_dict = dbobj.handle_all_tables(table_names, file, csv_dict, cnx, inc_response)
+                            c.close()
+                            cnx.close()
+        except Exception as ex:
+            print(ex)
 
         return csv_dict
 
@@ -52,6 +55,7 @@ class HandleInputs:
                     except Exception as ex:
                         pass
         except Exception as ex:
-            pass
+            print(ex)
+
 
         return merged_df

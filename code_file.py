@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # use args parse to turn off and on db tables
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--include_db', type=str, default='1',
+    parser.add_argument('--include_db', type=str, default='0',
                         help='Would you like to include db files set to 0 for no ')
     parser.add_argument('--include_response_table',
                         help="Would you like to include this erroneous table? set to 0 for no",
@@ -72,6 +72,10 @@ if __name__ == '__main__':
     # insert the train test dataframes in to a new database
     HandleOutputs.data_frame_to_db('train', train, conn)
     HandleOutputs.data_frame_to_db('test', test, conn)
+    conn.close()
+
+    HandleOutputs.create_csv('train', train, inc_db, inc_response)
+    HandleOutputs.create_csv('test', test, inc_db, inc_response)
 
 # When you have completed steps 1 and 2 detailed above.
 

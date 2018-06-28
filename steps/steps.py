@@ -211,21 +211,16 @@ def i_call_data_frames_to_dbt_list(context):
     # Create the handle output object
     HandleOutputs = handleoutputs.HandleOutputs()
     # insert the dataframes in to a new database
-
-    len(list(context.csv_merged.columns.values))
     HandleOutputs.data_frame_to_db('mergedcsv', context.csv_merged, context.cnx)
+    context.cnx.close()
 
 @then('I should see data_frames_to_db {equals}')
 def i_should_see_data_frames_to_db_result(context, equals):
-    len(list(context.csv_merged.columns.values))
-    context.csv_dict
     firstkey = str(list(context.csv_dict.keys())[0])
-
     table_content = context.csv_dict[firstkey]
     print(table_content)
-    context.cnx.close()
-    # if len(list(context.csv_merged.columns.values)) == 3:
-    #     answer = True
-    # else:
-    #     answer = False
-    # assert equals == str(answer)
+    if len(list(table_content.columns.values)) == 4:
+        answer = True
+    else:
+        answer = False
+    assert equals == str(answer)

@@ -1,0 +1,11 @@
+behave==1.2.6
+numpy==1.14.5
+pandas==0.23.1
+parse==1.8.4
+parse-type==0.4.2
+python-dateutil==2.7.3
+pytz==2018.4
+scikit-learn==0.19.1
+scipy==1.1.0
+six==1.11.0
+sklearn==0.0

@@ -91,11 +91,13 @@ def i_have_response(context, inc_response):
 @when('I call handle_all_tables')
 def i_call_handle_all_tables(context):
     HandleInputDbobj = handleinputsdb.HandleInputDb()
+
     context.csv_dict = HandleInputDbobj.handle_all_tables(context.all_tables,
                                                                context.filename,
                                                                context.csv_dict,
                                                                context.cnx,
                                                                context.inc_response)
+    print(context.csv_dict)
     context.cnx.close()
 
 
@@ -196,6 +198,7 @@ def i_should_see_merge_dataframe_list_result(context, equals):
 @given('I create new HandleOutputs_data_frames_to_db context variables')
 def i_create_new_HandleOutputs_data_frames_to_db_context_variables(context):
     context.data_path = os.path.dirname(os.getcwd()) + '/data'  # os.path.dirname(os.getcwd()) + '/inputs'
+    print(context.data_path)
     context.cnx = sqlite3.connect(context.data_path + '/' + 'testing.db')
     context.csv_dict = {}
     context.df = None
@@ -211,14 +214,16 @@ def i_call_data_frames_to_dbt_list(context):
     # Create the handle output object
     HandleOutputs = handleoutputs.HandleOutputs()
     # insert the dataframes in to a new database
+
+    print(len(list(context.csv_merged.columns.values)))
     HandleOutputs.data_frame_to_db('mergedcsv', context.csv_merged, context.cnx)
-    context.cnx.close()
+
 
 @then('I should see data_frames_to_db {equals}')
 def i_should_see_data_frames_to_db_result(context, equals):
     firstkey = str(list(context.csv_dict.keys())[0])
     table_content = context.csv_dict[firstkey]
-    print(table_content)
+    context.cnx.close()
     if len(list(table_content.columns.values)) == 4:
         answer = True
     else:

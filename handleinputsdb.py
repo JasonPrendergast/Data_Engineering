@@ -10,10 +10,7 @@ class HandleInputDb:
             # get all the data from the table
             df = pd.read_sql_query("SELECT * FROM " + table, cnx)
             # print(list(df.columns.values))
-            try:
-                df = df.rename(columns={'acc_i': 'Accident_Index'})
-            except Exception as ex:
-                pass
+            df = df.rename(columns={'acc_i': 'Accident_Index'})
             if table == 'police':
                 df = df.rename(columns={'police_force': 'police_force_db'})
                 df = df.rename(columns={'did_police_officer_attend_scene_of_accident':
@@ -42,6 +39,7 @@ class HandleInputDb:
         for table in table_names:
             # turn the tuple to a string
             table = str(table)
+
             # clean the table name string
             for ch in [',', '-', ')', '(', '/', '\\', '[', ']', '{', '}', '&', '#', '\'', '"', ':', '', ')',
                        '(', '*', '&',
@@ -51,16 +49,16 @@ class HandleInputDb:
 
             # create the dict key from the table name and file name
             db_table = str(table) + '_' + file
+
             # check if the table name is response
             if table != 'response':
-                print('table != response')
+
                 # get the contents of the table and insert it into the dict with the key
-                print(db_table)
-                print(table)
                 csv_dict[db_table] = self.database_to_df(cnx, table)
+
             # check if the table is response
             elif table == 'response' and inc_response != '0':
-                print('table == response and inc_response != 0')
+
                 # get the contents of the table and insert it into the dict with the key
                 csv_dict[db_table] = self.database_to_df(cnx, table)
             else:

@@ -66,8 +66,13 @@ if __name__ == '__main__':
     # create handle output object
     HandleOutputs = handleoutputs.HandleOutputs()
 
+    # create data directory if it doesn't exist
+    directory = os.getcwd() + '/data/'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     # make new connection to traintest db
-    conn = sqlite3.connect(os.getcwd() + '/data/' + 'traintest.db')
+    conn = sqlite3.connect(directory + 'traintest.db')
 
     # insert the train test dataframes in to a new database
     HandleOutputs.data_frame_to_db('train', train, conn)

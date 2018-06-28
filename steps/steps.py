@@ -115,7 +115,7 @@ def i_should_see_handle_all_tables_result(context, equals):
 
 
 @given('I create new Handleinput_read_all_files context variables')
-def i_create_new_HandleinputDB_handle_all_tables_context_variables(context):
+def i_create_new_Handleinput_handle_all_tables_context_variables(context):
     context.HandleInputDbobj = handleinputsdb.HandleInputDb()
     context.data_path = os.path.dirname(os.getcwd()) + '/inputs'
 
@@ -153,7 +153,8 @@ def i_should_see_read_all_files_result(context, equals):
 
 
 @given('I create new Handleinput_merge_dataframe_list context variables')
-def i_create_new_HandleinputDB_merge_dataframe_list_context_variables(context):
+def i_create_new_Handleinput_merge_dataframe_list_context_variables(context):
+
     context.df_dict = {}
 
 # When I call merge_dataframe_list
@@ -190,3 +191,41 @@ def i_should_see_merge_dataframe_list_result(context, equals):
     else:
         answer = False
     assert equals == str(answer)
+# ---------------------------------------------------------------------------------------
+
+@given('I create new HandleOutputs_data_frames_to_db context variables')
+def i_create_new_HandleOutputs_data_frames_to_db_context_variables(context):
+    context.data_path = os.path.dirname(os.getcwd()) + '/data'  # os.path.dirname(os.getcwd()) + '/inputs'
+    context.cnx = sqlite3.connect(context.data_path + '/' + 'testing.db')
+    context.csv_dict = {}
+    context.df = None
+    context.all_tables = {'mergedcsv'}
+    context.filename = 'test'
+    context.inc_response = 0
+
+ # When I call data_frames_to_dbt
+ #    Then I should see data_frames_to_db <equals>
+
+@when('I call data_frames_to_dbt')
+def i_call_data_frames_to_dbt_list(context):
+    # Create the handle output object
+    HandleOutputs = handleoutputs.HandleOutputs()
+    # insert the dataframes in to a new database
+
+    len(list(context.csv_merged.columns.values))
+    HandleOutputs.data_frame_to_db('mergedcsv', context.csv_merged, context.cnx)
+
+@then('I should see data_frames_to_db {equals}')
+def i_should_see_data_frames_to_db_result(context, equals):
+    len(list(context.csv_merged.columns.values))
+    context.csv_dict
+    firstkey = str(list(context.csv_dict.keys())[0])
+
+    table_content = context.csv_dict[firstkey]
+    print(table_content)
+    context.cnx.close()
+    # if len(list(context.csv_merged.columns.values)) == 3:
+    #     answer = True
+    # else:
+    #     answer = False
+    # assert equals == str(answer)

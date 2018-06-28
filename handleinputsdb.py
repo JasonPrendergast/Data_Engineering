@@ -10,10 +10,11 @@ class HandleInputDb:
             # get all the data from the table
             df = pd.read_sql_query("SELECT * FROM " + table, cnx)
             # print(list(df.columns.values))
-            df = df.rename(columns={'acc_i': 'Accident_Index'})
-            print(table)
+            try:
+                df = df.rename(columns={'acc_i': 'Accident_Index'})
+            except Exception as ex:
+                pass
             if table == 'police':
-                print('in this')
                 df = df.rename(columns={'police_force': 'police_force_db'})
                 df = df.rename(columns={'did_police_officer_attend_scene_of_accident':
                                             'did_police_officer_attend_scene_of_accident_db'})
@@ -22,7 +23,7 @@ class HandleInputDb:
             pass
         if df is None:
             # this will cause an error later if it is triggered although it should never happen
-            # because this is from a list of tables taken from the database
+            # because this is from a list of tables taken from the database. This will be triggered in testing
             pass
         else:
             return df
@@ -54,6 +55,8 @@ class HandleInputDb:
             if table != 'response':
                 print('table != response')
                 # get the contents of the table and insert it into the dict with the key
+                print(db_table)
+                print(table)
                 csv_dict[db_table] = self.database_to_df(cnx, table)
             # check if the table is response
             elif table == 'response' and inc_response != '0':

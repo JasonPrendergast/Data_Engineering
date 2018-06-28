@@ -31,6 +31,7 @@ import argparse
 import handleoutputs
 import produceoutput
 from sklearn.model_selection import train_test_split
+import sqlite3
 
 
 if __name__ == '__main__':
@@ -50,19 +51,27 @@ if __name__ == '__main__':
 
     # Get the director path
     data_path = os.getcwd()+'/inputs'
-    print(data_path)
+
+    # Create the merged data from the inputs
     ProduceOutput = produceoutput.ProduceOutput()
     csv_merged = ProduceOutput.process_input_data(data_path, inc_db, inc_response)
+
     # use sklearn's built in train test split
     train, test = train_test_split(csv_merged, test_size=0.2)
+
     # convert the numpy arrays back to pandas dataframes
     train = pd.DataFrame(train)
     test = pd.DataFrame(test)
+
     # create handle output object
     HandleOutputs = handleoutputs.HandleOutputs()
+
+    # make new connection to traintest db
+    conn = sqlite3.connect(os.getcwd() + '/data/' + 'traintest.db')
+
     # insert the train test dataframes in to a new database
-    HandleOutputs.data_frame_to_db('train', train)
-    HandleOutputs.data_frame_to_db('test', test)
+    HandleOutputs.data_frame_to_db('train', train, conn)
+    HandleOutputs.data_frame_to_db('test', test, conn)
 
 # When you have completed steps 1 and 2 detailed above.
 

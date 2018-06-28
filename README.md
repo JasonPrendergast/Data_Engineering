@@ -3,12 +3,14 @@
     \Data_Engineer_Assignment__1_\pip install -r requirements.txt
     
     \Data_Engineer_Assignment__1_\python code_file.py --include_db=0 --include_response_table=0
-
+    \Data_Engineer_Assignment__1_>python code_file.py --include_db=1 --include_response_table=0
 # Use behave
 
     \Data_Engineer_Assignment__1_\features>behave
 
 #Behave results
+
+Many more tests can be added but this is just a demonstration 
 
     Feature: test cases HandleOutputs_data_frames_to_db # test_bdd_HandleOutputs_data_frames_to_db.feature:2
 
